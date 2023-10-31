@@ -38,24 +38,16 @@ export const getContents = async (req: Request, res: Response) => {
 }
 
 export const updateContent = async (req: Request, res: Response) => {
-  const { id } = req.params
   const { value, key } = req.body
+  const { currentContent } = req.app.locals
+  const payload = { ...currentContent, ...{ value, key } }
 
-  //TODO: 44~49 REFATORAR COM O TAKATO
-  const content = await queryClient.content.findUnique({where: {
-    id: id, 
-    deletedAt: null,
-  }})
-  if(!content) return res.status(404).send({message: "This content does not exist"})
-
-  const payload = { ...content, ...{ value, key } }
-
-  if (JSON.stringify(payload) === JSON.stringify(content)) return res.status(400).send({ 
+  if (JSON.stringify(payload) === JSON.stringify(currentContent)) return res.status(400).send({
     message: "You send the same old value for key or value, please send a new value." 
   })
 
   const updatedContent = await queryClient.content.update({where: {
-    id: content.id
+    id: currentContent.id
   },
   data: {
     key: payload.key,
@@ -70,10 +62,6 @@ export const deleteContent = async (req: Request, res: Response) => {
   const { id } = req.params
 
   if (!id) return res.status(400).send({message: "You must pass the id"})
-
-  const contentExist = await queryClient.content.findUnique({where: {id: id}})
-
-  if (!contentExist) return res.status(404).send({ message: "Invalid id" })
 
   const deletedContent = await queryClient.content.update({
     where: {
