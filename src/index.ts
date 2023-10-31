@@ -12,7 +12,7 @@ const app = express()
 
 app.use(express.json())
 // app.use('/projects', projects)
-app.use('/content', contents)
+app.use('/contents', contents)
 // app.use('/contentGroups', contentGroups)
 
 

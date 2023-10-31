@@ -11,9 +11,9 @@ datasource db {
 }
 
 model Content {
-  contentId             String           @id @unique
-  name           String
-  content        String
+  id             String           @id @unique
+  key            String
+  value          String
   createdAt      DateTime
   updatedAt      DateTime?
   deletedAt      DateTime?
