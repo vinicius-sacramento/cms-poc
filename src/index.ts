@@ -6,10 +6,11 @@ import contents from "./routes/content.routes"
 
 import { config } from "./utils/config";
 
+const cors = require('cors')
 const port = config.APP_PORT
 
 const app = express()
-
+app.use(cors)
 app.use(express.json())
 // app.use('/projects', projects)
 app.use('/contents', contents)

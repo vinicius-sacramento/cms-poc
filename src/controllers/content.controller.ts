@@ -31,7 +31,7 @@ export const createContent = async (req: Request, res: Response) => {
 export const getContents = async (req: Request, res: Response) => {
   const { showDeleted } = req.query
 
-  const filterByDeleted = !!showDeleted ? {} : {deletedAt: null}
+  const filterByDeleted = showDeleted === 'true' ? {} : { deletedAt: null }
 
   const contents = await queryClient.content.findMany({ where: filterByDeleted })
   return res.status(200).send({ contents: contents })
@@ -71,6 +71,11 @@ export const deleteContent = async (req: Request, res: Response) => {
       deletedAt: new Date().toISOString()
     }
   })
+  return res.status(200).send(deletedContent)
+}
+
+export const deleteAllContents = async (req: Request, res: Response) => {
+  const deletedContent = await queryClient.content.deleteMany()
   return res.status(200).send(deletedContent)
 }
 
