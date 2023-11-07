@@ -1,15 +1,15 @@
-import express from 'express'
+
+import { FastifyInstance, FastifyRegisterOptions } from 'fastify';
 import { getContents, createContent, updateContent, deleteContent, purgeDeletedContents, deleteAllContents } from '../controllers/content.controller';
-import {validateContentExistence} from "../controllers/content.middleware";
 
-const router = express.Router()
-
-router.get('/', getContents)
-router.post('/', createContent)
-router.patch('/:id', validateContentExistence, updateContent)
-router.delete('/delete-all', deleteAllContents)
-router.delete('/purge', purgeDeletedContents)
-router.delete('/:id', validateContentExistence, deleteContent)
-
-
-export default router;
+export const contentRoutes = (app: FastifyInstance) => {
+  app.register((app: FastifyInstance, _opts: FastifyRegisterOptions<any>, done: Function) => {
+    app.get('/', getContents)
+    app.post('/', createContent)
+    app.patch('/:id', updateContent)
+    app.delete('/delete-all', deleteAllContents)
+    app.delete('/purge', purgeDeletedContents)
+    app.delete('/:id', deleteContent)
+    done()
+  }, {prefix: "/contents"})
+}

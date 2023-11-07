@@ -1,24 +1,30 @@
 import "dotenv/config"
-import express from "express";
+import Fastify from 'fastify'
+import cors from '@fastify/cors'
+
+const app = Fastify({
+  logger: true
+})
+
+app.register(cors, {
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS', 'HEAD'],
+})
+
 // import projects from "./routes/project.routes"
 // import contentGroups from "./routes/contentGroup.routes"
-import contents from "./routes/content.routes"
-import cors from "cors"
+import  { contentRoutes } from "./routes/content.routes"
 import { config } from "./utils/config";
 
 const port = config.APP_PORT
 
-const app = express()
-
-// app.use(cors)
-app.use(express.json())
-app.use(cors())
 // app.use('/projects', projects)
-app.use('/contents', contents)
 // app.use('/contentGroups', contentGroups)
+contentRoutes(app)
 
-
-
-app.listen(port, () => {
+app.listen({
+  host: '0.0.0.0',
+  port: port ? Number(port) : 3000
+}, () => {
   console.log(`Example app listening on port ${port}`)
 })
